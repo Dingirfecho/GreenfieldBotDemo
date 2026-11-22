@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<title>Dashboard del cliente · Prototipo de Migración Greenfield · AI-Q Consultores</title>
+<style>
+:root{--paper:#f3f0e8;--ink:#1b1b1b;--mute:#6b675e;--line:#cfc9bb;--card:#fbf9f4;--acc:#c2410c;--bad:#b42318;--warn:#a16207}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--ink)}
+.logo{font-weight:700}.logo b{color:var(--acc)}.tag{font-size:12px;border:1px solid var(--ink);padding:2px 8px;text-transform:uppercase;letter-spacing:.06em}
+.docbar{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--mute);padding:8px 0;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em}
+.back{font-size:13px;margin:14px 0 0;display:inline-block;color:var(--ink)}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.15;margin:10px 0 8px}h2{font-size:20px;margin:34px 0 8px}
+.sub{color:var(--mute);margin:0 0 12px}.callout{border:1px solid var(--ink);background:var(--card);padding:10px 14px;margin:14px 0;font-size:14px}.callout:before{content:"● ";color:var(--acc)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}.tile{border:1px solid var(--line);background:var(--card);padding:14px}
+.tile b{display:block;font-size:34px;font-weight:600}.tile span{font-size:12px;color:var(--mute)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}.card{border:1px solid var(--line);background:var(--card);padding:14px}.card h3{margin:0 0 8px;font-size:15px}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);white-space:nowrap}td.n{text-align:right;font-variant-numeric:tabular-nums}.crit{color:var(--bad)}.alto{color:var(--warn)}
+.row{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}.row .l{flex:0 0 42%;text-align:right;color:#3a3832;overflow-wrap:anywhere}.row .b{height:16px;background:var(--acc)}.row .v{font-variant-numeric:tabular-nums}
+footer{margin:40px 0 28px;padding-top:12px;border-top:1px solid var(--ink);font-size:12px;color:var(--mute);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+</style></head><body><div class="wrap">
+<header class="top"><div class="logo">AI<b>—</b>Q <span class="mono" style="font-weight:400;color:var(--mute)">/ Consultores</span></div><span class="tag mono">Demo · simulación</span></header>
+<div class="docbar mono"><span>DOC // AIQ-GF-002 · REV / A</span><span>● Datos ficticios</span><span>HOJA 02 / DASHBOARD DEL CLIENTE</span></div>
+<a class="back" href="index.html">← Volver a la explicación de la arquitectura</a>
+<p class="mono sub" style="margin-top:18px;text-transform:uppercase;letter-spacing:.06em;font-size:12px">Prototipo de Migración Greenfield · AI-Q Consultores</p>
+<h1>Inventario de objetos Z · migración greenfield SAP</h1>
+<p class="sub" id="lead"></p>
+<div class="callout">Datos de muestra. Cliente Demo S.A.: objetos, usos y dependencias son ficticios (ECC 6.0 EHP7 simulado, ventana de uso de 8 meses). Los destinos son propuestas a validar con el cliente, no decisiones. Así se vería el resultado final entregado al cliente.</div>
+<div class="tiles" id="tiles"></div>
+<h2>Configuración del cliente: qué tiene y por qué se analiza</h2>
+<p class="sub">Cada fila es un elemento que puede depender de un objeto Z sin aparecer en un where-used de código.</p>
+<div class="scroll"><table><thead><tr><th>Categoría</th><th>Elemento</th><th>Detalle</th><th>Objeto Z</th><th>Por qué se analiza</th></tr></thead><tbody id="tcfg"></tbody></table></div>
+<h2>Uso medido frente a dependencias</h2>
+<div class="grid2"><div class="card"><h3>Objetos por cuadrante</h3><div id="chq"></div></div><div class="card"><h3>Destino propuesto en S/4HANA</h3><div id="chd"></div></div></div>
+<h2>Dependencias que no aparecen en un where-used de código</h2>
+<div class="scroll"><table><thead><tr><th>Objeto</th><th>Quién depende de él</th><th>Llamadas</th></tr></thead><tbody id="toc"></tbody></table></div>
+<h2>Catálogo completo, por criticidad</h2>
+<div class="scroll"><table><thead><tr><th>Objeto</th><th>Tipo</th><th>Llamadas</th><th>Cuadrante</th><th>Score</th><th>Nivel</th><th>Destino propuesto</th><th>Revisión</th><th>Alertas</th></tr></thead><tbody id="tcat"></tbody></table></div>
+<h2>Roadmap de migración greenfield (propuesta)</h2>
+<p class="sub">Orden por dependencias, no por calendario: fechas y esfuerzo dependen del equipo y del alcance del cliente.</p>
+<div class="scroll"><table><thead><tr><th>Ola</th><th>Objetivo</th><th>Objetos</th><th>Destino</th><th>Depende de</th><th>Criterio de salida</th></tr></thead><tbody id="trm"></tbody></table></div>
+<footer class="mono"><span>Prototipo de Migración Greenfield · AI-Q Consultores</span><span>DOC // AIQ-GF-002 · datos ficticios</span></footer></div>
+<script>
+const CAT=__CAT__,CFG=__CFG__,RM=__RM__;
+const $=id=>document.getElementById(id),esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=n=>n.toLocaleString('es-AR');
+const ocultos=CAT.filter(r=>r.enganche_oculto),dorm=CAT.filter(r=>r.cableado&&(r.uso_clase==='bajo'||r.uso_clase==='cero')),altos=CAT.filter(r=>r.criticidad_nivel==='alto'||r.criticidad_nivel==='critico'),rev=CAT.filter(r=>r.revision_humana);
+$('lead').textContent=CAT.length+' objetos Z analizados: '+ocultos.length+' tienen dependencias que un where-used de código no ve, y '+dorm.length+' con poco o nulo uso siguen cableados a procesos activos.';
+$('tiles').innerHTML=[[CAT.length,'objetos Z analizados'],[ocultos.length,'con dependencias ocultas'],[dorm.length,'poco o nulo uso pero cableados'],[altos.length,'criticidad alta o crítica'],[rev.length,'requieren revisión humana']].map(t=>`<div class="tile"><b>${t[0]}</b><span>${t[1]}</span></div>`).join('');
+$('tcfg').innerHTML=CFG.map(r=>`<tr><td>${esc(r.categoria)}</td><td>${esc(r.elemento)}</td><td>${esc(r.detalle)}</td><td class="mono" style="font-size:12px">${esc(r.objetos_z)}</td><td>${esc(r.por_que_se_analiza)}</td></tr>`).join('');
+function bars(id,key,map){const m={};CAT.forEach(r=>{const k=map(r);m[k]=(m[k]||0)+1});const e=Object.entries(m).sort((a,b)=>b[1]-a[1]||a[0]<b[0]?-1:1),mx=Math.max(...e.map(x=>x[1]));
+$(id).innerHTML=e.map(([k,v])=>`<div class="row"><div class="l">${esc(k)}</div><div class="b" style="width:${v/mx*40}%"></div><div class="v">${v}</div></div>`).join('')}
+bars('chq','q',r=>r.cuadrante);bars('chd','d',r=>r.disposicion_final.indexOf('VALIDAR')===0?'VALIDAR':r.disposicion_final);
+$('toc').innerHTML=ocultos.slice().sort((a,b)=>a.uso_llamadas-b.uso_llamadas).map(r=>`<tr><td>${esc(r.objeto)}</td><td>${esc(r.enganche_oculto)}</td><td class="n">${fmt(r.uso_llamadas)}</td></tr>`).join('');
+$('tcat').innerHTML=CAT.slice().sort((a,b)=>b.criticidad_score-a.criticidad_score||b.uso_llamadas-a.uso_llamadas).map(r=>`<tr><td>${esc(r.objeto)}</td><td>${esc(r.tipo)}</td><td class="n">${fmt(r.uso_llamadas)}</td><td>${esc(r.cuadrante)}</td><td class="n">${r.criticidad_score}</td><td class="${r.criticidad_nivel==='critico'?'crit':r.criticidad_nivel==='alto'?'alto':''}">${esc(r.criticidad_nivel)}</td><td>${esc(r.disposicion_final)}</td><td>${r.revision_humana?'sí':'no'}</td><td>${esc(r.alertas)}</td></tr>`).join('');
+$('trm').innerHTML=RM.slice().sort((a,b)=>a.orden-b.orden).map(r=>`<tr><td>${esc(r.ola)}</td><td>${esc(r.objetivo)}</td><td>${esc(r.objetos)}</td><td>${esc(r.destino)}</td><td>${esc(r.depende_de)}</td><td>${esc(r.criterio_de_salida)}</td></tr>`).join('');
+</script></body></html>

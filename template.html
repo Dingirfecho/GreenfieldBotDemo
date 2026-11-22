@@ -78,6 +78,7 @@ footer{margin:44px 0 30px;padding-top:14px;border-top:1px solid var(--ink);font-
 <p class="lead">En una migración greenfield no se convierte código: se decide qué necesidad cubre cada objeto personalizado y cuál es la mejor forma de cubrirla en el sistema nuevo. Esta demo muestra cómo un flujo en n8n inventaría los objetos Z, descubre quién depende de ellos (incluso en lugares que un where-used no ve), propone un destino y deja a una persona la decisión final. Primero un recorrido guiado de unos 90 segundos; después, pestañas por tema.</p>
 <div class="callout">Simulación ilustrativa. Los 18 objetos, los usos y las dependencias son ficticios (ECC 6.0 EHP7 simulado, ventana de uso de 8 meses); no hay conexión a ningún sistema real. Los destinos propuestos son sugerencias a validar, no decisiones.</div>
 
+<div class="callout" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-top:0"><span style="border:0">Así se ve el resultado final que recibe el cliente: dashboard con inventario, configuración, dependencias ocultas y roadmap.</span><a class="tag mono" style="text-decoration:none;color:var(--ink);background:var(--card)" href="dashboard.html">Ver el dashboard del cliente →</a></div>
 <section class="viewer" id="viewer" aria-label="Recorrido guiado">
 <div class="vhead mono"><span id="vstage">Etapa 01 / 08</span><span id="vfig">FIG. 01 · Extracción</span><span id="vtime">00:00</span></div>
 <div class="lanes mono"><span>Cliente (SAP ECC)</span><span>Orquestación (n8n)</span><span>Salida</span></div>
@@ -153,7 +154,7 @@ footer{margin:44px 0 30px;padding-top:14px;border-top:1px solid var(--ink);font-
 <details><summary>¿Cuánto tarda la migración?</summary><p>La demo propone un orden por olas, no un calendario. Plazos y esfuerzo dependen del alcance y del equipo del cliente.</p></details>
 </div>
 
-<footer class="mono"><span>Prototipo de Migración Greenfield · AI-Q Consultores</span><span>DOC // AIQ-GF-001 · datos ficticios</span></footer>
+<footer class="mono"><span>Prototipo de Migración Greenfield · AI-Q Consultores</span><span><a href="dashboard.html" style="color:inherit">Dashboard del cliente</a> · DOC // AIQ-GF-001 · datos ficticios</span></footer>
 </div>
 <script>
 const DATA=__DATA__;

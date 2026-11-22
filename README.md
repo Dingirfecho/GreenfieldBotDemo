@@ -7,4 +7,5 @@ Mini demo estática (una sola página) que explica la arquitectura de un analiza
 Todos los datos son ficticios (18 objetos de un ECC 6.0 simulado).
 
 - `index.html`: la demo (se publica con GitHub Pages desde la raíz de `main`).
+- `dashboard.html`: copia estática del dashboard del cliente, enlazada desde la demo.
 - `template.html` + `data.json` + `build.py`: fuente; `python3 build.py` regenera `index.html`.
