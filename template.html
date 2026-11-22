@@ -165,6 +165,34 @@ footer{margin:44px 0 30px;padding-top:14px;border-top:1px solid var(--ink);font-
 <div class="callout">Los pesos del scoring y las reglas de guarda se calibran con cada cliente en el piloto: lo que aquí se muestra es una primera versión sobre datos ficticios.</div>
 </div>
 
+<div class="panel" id="p-var" role="tabpanel">
+<p>El flujo es el mismo en todos los clientes, pero lo que se puede medir y leer depende del release de SAP y de los componentes instalados. Esta pestaña muestra qué cambia y qué hay que validar en cada caso.</p>
+<h3>1 · Medición de uso según el release</h3>
+<div class="scroll"><table><thead><tr><th>Si el cliente tiene</th><th>Cómo se mide el uso</th><th>Qué cambia en el análisis</th></tr></thead><tbody>
+<tr><td>AS ABAP 7.50 o superior</td><td>ABAP Call Monitor (SCMON) disponible de serie, más SUSG para acumular</td><td>Caso base de esta demo: uso por objeto y también quién lo llama</td></tr>
+<tr><td>Releases anteriores desde 7.00</td><td>Se instala el add-on ST-PI y se usa la transacción /SDF/SCMON (nota SAP 2679723)</td><td>Misma información, pero requiere una instalación previa en el sistema productivo</td></tr>
+<tr><td>Releases muy antiguos o sin soporte para SCMON</td><td>El antecesor, UPL, exige niveles mínimos (por ejemplo 7.01 SP10, 7.02 SP9, 7.31 SP3 o 7.40) y Solution Manager</td><td>Por debajo de eso no hay medición nativa confirmada: plan B con estadísticas de carga, logs de salida y jobs. A validar caso por caso</td></tr>
+<tr><td>Solution Manager 7.2 en el landscape</td><td>Recoge SCMON o UPL según lo que el sistema soporte</td><td>El extractor puede leer el uso ya acumulado. No se deben correr UPL y SCMON en paralelo</td></tr>
+<tr><td>Sin Solution Manager</td><td>SCMON local y SUSG; los datos acumulados se leen por una API remota de SUSG</td><td>El extractor Z puede usar esa API en lugar de medir por su cuenta</td></tr></tbody></table></div>
+<div class="callout">Dos reglas que cambian la lectura: SCMON guarda los datos solo unos días por defecto, por eso se acumulan con SUSG; y SAP recomienda medir al menos un año antes de decidir. Con menos, el uso bajo o cero no es concluyente, como pasa en esta demo con 8 meses.</div>
+<div class="callout">SCMON solo mide uso de objetos ABAP: no cubre Smart Forms ni Adobe Forms. En esta demo el uso de los formularios es simulado; en un cliente real se infiere de los logs de salida (NAST) y de los programas que los llaman.</div>
+<h3 style="margin-top:22px">2 · Qué cambia según los componentes que tenga</h3>
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+<div class="card"><h4>Formularios: SAPscript, Smart Forms, Adobe</h4><p style="margin:0;font-size:14px">Cada tecnología guarda sus llamadas de forma distinta (por ejemplo, PERFORM dentro de un SAPscript). El extractor debe leer cada tipo; los que no se lean quedan como dependencias ocultas sin detectar. A validar con el cliente.</p></div>
+<div class="card"><h4>BW instalado</h4><p style="margin:0;font-size:14px">Los DataSources y extractores genéricos aparecen como llamadores externos. Sin BW, esa categoría de enganche desaparece del análisis.</p></div>
+<div class="card"><h4>PI/PO u otro middleware en lugar de IDoc directo</h4><p style="margin:0;font-size:14px">Las interfaces se descubren en la configuración del middleware y no solo en los perfiles de socio. Hay que sumar esa fuente al paso de enganches ocultos.</p></div>
+<div class="card"><h4>Módulos activos (SD, MM, FI, otros)</h4><p style="margin:0;font-size:14px">Cada módulo trae sus propios enganches: salidas NAST en ventas y entregas, rutinas VOFM en precios, BAdIs en materiales y contabilidad. Un módulo no instalado no aporta enganches de ese tipo.</p></div>
+<div class="card"><h4>Localización fiscal</h4><p style="margin:0;font-size:14px">En Argentina, factura electrónica, CAE y libros de IVA pesan mucho en la cadena legal. En otro país cambian los objetos fiscales y la validación contra el estándar.</p></div>
+<div class="card"><h4>Código escrito en sintaxis antigua</h4><p style="margin:0;font-size:14px">En releases viejos el extractor debe escribirse con ABAP clásico, sin sintaxis moderna. Es una restricción técnica del extractor, no del análisis.</p></div></div>
+<h3 style="margin-top:22px">3 · Qué etapa del flujo se ve afectada</h3>
+<div class="scroll"><table><thead><tr><th>Etapa</th><th>Cambia con</th></tr></thead><tbody>
+<tr><td>01 Extracción</td><td>Release de ABAP (sintaxis del extractor) y fuente de uso disponible</td></tr>
+<tr><td>03 Análisis estático</td><td>Tipos de objeto presentes (formularios, clases, tablas) y qué sabe leer el extractor</td></tr>
+<tr><td>04 Enganches ocultos</td><td>Módulos, middleware, BW, workflow y salidas configuradas</td></tr>
+<tr><td>07 Scoring</td><td>Cobertura del uso medido y localización fiscal del cliente</td></tr></tbody></table></div>
+<p class="mono" style="font-size:12px;color:var(--mute);margin-top:18px">FUENTES: <a href="https://community.sap.com/t5/enterprise-resource-planning-blogs-by-sap/custom-code-adaptation-for-sap-s-4hana-faq/bc-p/13753486">SAP Community · Custom code adaptation FAQ</a> · <a href="https://blogs.sap.com/2019/02/27/aggregate-usage-data-in-your-production-system-with-susg-transaction/">SAP Blogs · SUSG</a> · <a href="https://docs.tricentis.com/livecompare-2023.3/content/configure_sap_to_collect_upl_data.htm">UPL (Tricentis docs)</a> · <a href="https://community.sap.com/t5/technology-blogs-by-sap/get-started-with-the-abap-custom-code-migration-process/bc-p/14049622">SAP Community · Custom code migration process</a>. Lo no respaldado por estas fuentes está marcado "a validar".</p>
+</div>
+
 <footer class="mono"><span>Prototipo de Migración Greenfield · AI-Q Consultores</span><span><a href="dashboard.html" style="color:inherit">Dashboard del cliente</a> · DOC // AIQ-GF-001 · datos ficticios</span></footer>
 </div>
 <script>
@@ -198,7 +226,7 @@ document.addEventListener('keydown',e=>{const t=e.target.tagName;if(t==='SELECT'
 flow.onclick=e=>{const n=e.target.closest('.node');if(n)show(+n.dataset.i)};
 show(0);requestAnimationFrame(t=>{last=t;tick(t)});
 // tabs
-const TABS=[['p-arq','Arquitectura'],['p-flujo','Flujo de análisis'],['p-score','Cuadrantes y criticidad'],['p-expl','Explorador de objetos'],['p-app','Roadmap de aplicación'],['p-lim','Límites y preguntas']];
+const TABS=[['p-arq','Arquitectura'],['p-flujo','Flujo de análisis'],['p-score','Cuadrantes y criticidad'],['p-expl','Explorador de objetos'],['p-app','Roadmap de aplicación'],['p-var','Variaciones por versión y módulos'],['p-lim','Límites y preguntas']];
 const tabs=$('tabs');tabs.innerHTML=TABS.map((t,i)=>`<button role="tab" data-p="${t[0]}" aria-selected="${i===0}">${t[1]}</button>`).join('');
 tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p))};
 // cuadrantes
