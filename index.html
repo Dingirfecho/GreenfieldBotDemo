@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Prototipo de Migración Greenfield · AI-Q Consultores</title>
+<style>
+:root{--paper:#f3f0e8;--ink:#1b1b1b;--mute:#6b675e;--line:#cfc9bb;--card:#fbf9f4;--acc:#c2410c;--ok:#2f6f4f;--warn:#a16207;--bad:#b42318;--blue:#1d4e89}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--ink)}
+.logo{font-weight:700;letter-spacing:.02em}.logo b{color:var(--acc)}
+.tag{font-size:12px;border:1px solid var(--ink);padding:2px 8px;text-transform:uppercase;letter-spacing:.06em}
+.docbar{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--mute);padding:8px 0;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.05em}
+.sec{margin:28px 0 6px;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.08em}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.1;margin:6px 0 14px;font-weight:700}
+h1 i{color:var(--acc);font-style:normal}
+p.lead{max-width:780px;color:#3a3832}
+.callout{border:1px solid var(--ink);background:var(--card);padding:12px 16px;margin:18px 0;font-size:14px}
+.callout:before{content:"● ";color:var(--acc)}
+.viewer{border:1px solid var(--ink);background:var(--card);margin:20px 0}
+.vhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.flow{display:grid;grid-template-columns:repeat(8,1fr);gap:0;padding:18px 10px 6px}
+.node{position:relative;border:1px solid var(--line);background:var(--paper);margin:0 6px;padding:8px 6px;text-align:center;font-size:12px;min-height:74px;display:flex;flex-direction:column;justify-content:center;transition:all .25s}
+.node .n{font-size:11px;color:var(--mute)}
+.node:not(:last-child):after{content:"→";position:absolute;right:-14px;top:50%;transform:translateY(-50%);color:var(--mute);font-size:14px}
+.node.done{border-color:var(--ok);color:var(--ok)}
+.node.on{border:2px solid var(--acc);background:#fff;color:var(--ink);box-shadow:3px 3px 0 var(--acc)}
+.lanes{display:grid;grid-template-columns:1fr 6fr 1fr;gap:6px;padding:0 16px 8px;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.lanes span{border-top:2px solid var(--line);padding-top:3px}
+.stage{padding:14px 18px 8px;display:grid;grid-template-columns:1.2fr 1fr;gap:20px;border-top:1px solid var(--line)}
+.stage h3{margin:0 0 4px;font-size:20px}
+.stage .box{font-size:13px;border-left:3px solid var(--acc);padding-left:10px;margin-bottom:8px}
+.stage .box b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.ctrl{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--ink)}
+button,select{font:inherit;font-size:13px;border:1px solid var(--ink);background:var(--paper);padding:5px 12px;cursor:pointer}
+button:hover{background:var(--ink);color:var(--paper)}
+.bar{flex:1;min-width:120px;height:4px;background:var(--line)}.bar i{display:block;height:100%;width:0;background:var(--acc)}
+.hint{font-size:12px;color:var(--mute);padding:0 14px 10px}
+.tabs{display:flex;gap:0;flex-wrap:wrap;border-bottom:1px solid var(--ink);margin-top:34px}
+.tabs button{border:1px solid var(--ink);border-bottom:0;margin-right:-1px;background:var(--paper)}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--paper)}
+.panel{display:none;padding:20px 0 10px}.panel.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{border:1px solid var(--line);background:var(--card);padding:14px 16px}
+.card h4{margin:0 0 6px;font-size:15px}
+.zone{border:1px dashed var(--ink);padding:12px;background:var(--card)}
+.zone h4{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--mute)}
+.chip{display:inline-block;border:1px solid var(--ink);padding:2px 8px;margin:2px 3px 2px 0;font-size:12px;background:var(--paper)}
+.chip.a{border-color:var(--acc);color:var(--acc)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.scroll{overflow-x:auto}
+.quad{display:grid;grid-template-columns:90px 1fr 1fr;gap:6px;font-size:13px;margin:10px 0}
+.quad div{padding:10px;border:1px solid var(--line);background:var(--card)}
+.quad .h{border:0;background:none;color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.quad b{font-size:22px;display:block}
+.sel{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.steps li{margin:6px 0}
+.bad{color:var(--bad)}.ok{color:var(--ok)}.warnc{color:var(--warn)}
+footer{margin:44px 0 30px;padding-top:14px;border-top:1px solid var(--ink);font-size:12px;color:var(--mute);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media(max-width:760px){.flow{grid-template-columns:repeat(4,1fr);row-gap:14px}.stage{grid-template-columns:1fr}.node:nth-child(4):after{display:none}.lanes{display:none}.quad{grid-template-columns:70px 1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="logo">AI<b>—</b>Q <span class="mono" style="font-weight:400;color:var(--mute)">/ Consultores</span></div><span class="tag mono">Demo · simulación</span></header>
+<div class="docbar mono"><span>DOC // AIQ-GF-001 · REV / A</span><span>● Datos ficticios</span><span>HOJA 01 / ARQUITECTURA</span></div>
+
+<div class="sec mono">§ Prototipo de Migración Greenfield · AI-Q Consultores</div>
+<h1>Del código Z al destino en S/4HANA, sin decidir a ciegas<i>/</i></h1>
+<p class="lead">En una migración greenfield no se convierte código: se decide qué necesidad cubre cada objeto personalizado y cuál es la mejor forma de cubrirla en el sistema nuevo. Esta demo muestra cómo un flujo en n8n inventaría los objetos Z, descubre quién depende de ellos (incluso en lugares que un where-used no ve), propone un destino y deja a una persona la decisión final. Primero un recorrido guiado de unos 90 segundos; después, pestañas por tema.</p>
+<div class="callout">Simulación ilustrativa. Los 18 objetos, los usos y las dependencias son ficticios (ECC 6.0 EHP7 simulado, ventana de uso de 8 meses); no hay conexión a ningún sistema real. Los destinos propuestos son sugerencias a validar, no decisiones.</div>
+
+<section class="viewer" id="viewer" aria-label="Recorrido guiado">
+<div class="vhead mono"><span id="vstage">Etapa 01 / 08</span><span id="vfig">FIG. 01 · Extracción</span><span id="vtime">00:00</span></div>
+<div class="lanes mono"><span>Cliente (SAP ECC)</span><span>Orquestación (n8n)</span><span>Salida</span></div>
+<div class="flow" id="flow"></div>
+<div class="stage" id="stagebox"></div>
+<div class="ctrl"><button id="bplay" type="button">❚❚ Pausa</button><button id="brest" type="button">↺ Reiniciar</button><button id="bprev" type="button" aria-label="Etapa anterior">←</button><button id="bnext" type="button" aria-label="Etapa siguiente">→</button><label class="mono" style="font-size:12px">Velocidad <select id="bspd"><option value="1">1x</option><option value="2">2x</option><option value="0.5">0.5x</option></select></label><div class="bar"><i id="bbar"></i></div></div>
+<div class="hint mono">Actores: extractor Z · n8n · LLM · reglas · persona revisora. Atajos: espacio pausa, ← → cambian de etapa.</div>
+</section>
+
+<div class="tabs" role="tablist" id="tabs"></div>
+
+<div class="panel on" id="p-arq" role="tabpanel">
+<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+<div class="zone"><h4>1 · Sistema del cliente (ECC)</h4>
+<span class="chip">Extractor Z (ABAP, solo lectura)</span><span class="chip">SCMON + SUSG (uso)</span><span class="chip">NAST / TNAPR</span><span class="chip">SM37 (jobs)</span><span class="chip">VOFM · BAdI · IDoc · BW · workflow</span>
+<p style="font-size:13px">Entrega un volcado en archivos con el código, el uso medido y la configuración que conecta cada objeto con el negocio. No se instala nada fuera del sistema y no se modifica ningún dato.</p></div>
+<div class="zone"><h4>2 · Orquestación (n8n)</h4>
+<span class="chip a">Ingesta</span><span class="chip a">Análisis estático y grafo</span><span class="chip a">LLM con salida estructurada</span><span class="chip a">Reglas de guarda</span><span class="chip a">Scoring</span><span class="chip">Data Table / catálogo</span>
+<p style="font-size:13px">El grafo de dependencias se calcula con código determinista; el LLM solo interpreta el propósito y propone un destino. Las reglas duras pesan más que el LLM.</p></div>
+<div class="zone"><h4>3 · Destino y gobierno</h4>
+<span class="chip">Revisión humana</span><span class="chip">Dashboard del cliente</span><span class="chip">Roadmap por olas</span><span class="chip">S/4HANA estándar</span><span class="chip">Extensiones in-app</span><span class="chip">Integration Suite</span><span class="chip">Joule / SBPA</span><span class="chip">n8n side-by-side</span>
+<p style="font-size:13px">El catálogo alimenta el tablero y el plan de migración. Lo que toca fiscalidad, posteos contables o interfaces pasa siempre por una persona.</p></div>
+</div>
+<h3 style="margin-top:24px">¿A dónde va cada tipo de objeto?</h3>
+<div class="scroll"><table><thead><tr><th>Destino</th><th>Cuándo aplica</th><th>No aplica cuando</th></tr></thead><tbody>
+<tr><td class="mono">estandar_s4</td><td>Lo cubre funcionalidad o configuración estándar (por ejemplo, salidas de facturación)</td><td>El estándar no cubre la normativa local: se valida antes</td></tr>
+<tr><td class="mono">extension_in_app</td><td>Lógica síncrona dentro de una transacción (fórmula de precios, validación de movimientos)</td><td>Nunca se manda a un flujo externo</td></tr>
+<tr><td class="mono">side_by_side_n8n</td><td>Procesos asíncronos o programados, avisos, conciliaciones</td><td>Necesita consistencia dentro de la transacción</td></tr>
+<tr><td class="mono">integration_suite</td><td>Interfaces con sistemas externos (IDoc, RFC, APIs) con mensajería gobernada</td><td>—</td></tr>
+<tr><td class="mono">sbpa_workflow</td><td>Aprobaciones y flujos formales con roles</td><td>—</td></tr>
+<tr><td class="mono">rediseno_cds_fiori</td><td>Reportes y consultas (CDS, Fiori)</td><td>—</td></tr>
+<tr><td class="mono">migrar_datos</td><td>Tablas con datos históricos</td><td>—</td></tr>
+<tr><td class="mono">retirar</td><td>Sin uso y sin dependientes</td><td>Tiene un enganche activo, aunque su uso sea cero</td></tr></tbody></table></div>
+</div>
+
+<div class="panel" id="p-flujo" role="tabpanel">
+<ol class="steps">
+<li><b>Extractor Z (cliente).</b> Programa de solo lectura que vuelca código fuente, uso (SCMON/SUSG) y configuración a archivos.</li>
+<li><b>Ingesta (n8n).</b> Lee el volcado. En esta demo lo simula un nodo con los datos ficticios; en producción lee archivos desde SFTP, Drive o una carga manual.</li>
+<li><b>Análisis estático y grafo.</b> Sin LLM: extrae llamadas, lecturas y escrituras de tablas, y banderas técnicas (posteo contable, HTTP saliente, creación de pedidos, mensajes de error bloqueantes).</li>
+<li><b>Enganches ocultos.</b> Une la configuración: salidas NAST/TNAPR, jobs, rutinas VOFM, BAdIs activos, DataSources de BW, IDoc entrante, tareas de workflow y llamadores externos. Marca la cadena de salida legal.</li>
+<li><b>Análisis con LLM.</b> Recibe los hechos duros y el código; devuelve propósito, alternativa estándar, destino, riesgos, confianza y si requiere revisión. Salida con esquema fijo.</li>
+<li><b>Reglas de guarda.</b> Corrigen al LLM cuando contradice hechos: no se retira lo que tiene dependientes; lo síncrono no va a n8n; las tablas con datos van a migración; lo fiscal exige validación.</li>
+<li><b>Scoring y cuadrante.</b> Combina uso medido y dependencias en un cuadrante, y suma dependientes, usuarios, llamadores externos y salida legal en una criticidad de 0 a 10.</li>
+<li><b>Catálogo y revisión.</b> Guarda el resultado, marca lo que necesita revisión humana y alimenta el dashboard y el roadmap.</li></ol>
+<div class="callout">Principio central: un uso bajo no significa bajo impacto. Un formulario con 9 llamadas puede ser parte de una salida legal; un programa con cero llamadas puede correr una vez al año en un cierre contable.</div>
+</div>
+
+<div class="panel" id="p-score" role="tabpanel">
+<p>Cada objeto se ubica según su uso medido y si algo depende de él. Los conteos salen de los 18 objetos ficticios.</p>
+<div class="quad" id="quad"></div>
+<h3>Criticidad (0 a 10)</h3>
+<p style="font-size:14px">Suma ponderada de: dependientes (peso por tipo de enganche), usuarios de diálogo, llamadores externos, pertenencia a una salida legal, posteos contables, creación de pedidos y lógica dentro de una transacción. Niveles: bajo 0–2, medio 3–5, alto 6–7, crítico 8–10. Los pesos son una primera calibración y se ajustan con cada cliente.</p>
+<div class="callout">Regla de uso: con una ventana menor a 12 meses, un uso bajo o cero no es concluyente. La demo usa 8 meses a propósito para mostrarlo.</div>
+</div>
+
+<div class="panel" id="p-expl" role="tabpanel">
+<p>Elige un objeto y mira qué vio cada etapa: hechos, enganches, propuesta del LLM, guarda y resultado.</p>
+<div class="sel"><label class="mono" style="font-size:12px">Objeto <select id="osel"></select></label></div>
+<div id="oview" class="grid"></div>
+</div>
+
+<div class="panel" id="p-lim" role="tabpanel">
+<div class="grid">
+<div class="card"><h4>Lo que el cliente debe aportar</h4><ul style="padding-left:18px;margin:0;font-size:14px"><li>Permiso para instalar el extractor Z de solo lectura</li><li>Medición de uso activa (SCMON y SUSG) de al menos 12 meses</li><li>Un dueño por proceso para validar lo marcado como VALIDAR</li><li>Confirmación de la cobertura fiscal local (localización AR)</li></ul></div>
+<div class="card"><h4>Límites de este prototipo</h4><ul style="padding-left:18px;margin:0;font-size:14px"><li>Datos ficticios; con datos reales el análisis puede cambiar</li><li>El LLM no es determinista: una misma pieza puede recibir otro destino en otra corrida (visto con un RFC externo)</li><li>Nombres de tablas y funciones de SAP escritos de memoria; hay que validarlos en un sistema real</li><li>La versión mínima de SCMON y la disponibilidad de n8n dentro de Joule Studio no están confirmadas</li></ul></div>
+<div class="card"><h4>Qué hace la persona revisora</h4><p style="font-size:14px;margin:0">Valida salidas legales, posteos contables, interfaces externas y cualquier objeto con confianza baja. La herramienta propone y ordena; no decide.</p></div>
+</div>
+<h3 style="margin-top:22px">Preguntas frecuentes</h3>
+<details><summary>¿Por qué no usar solo el LLM?</summary><p>Porque un LLM puede contradecir hechos y no ve la configuración que conecta un objeto con el negocio. El grafo y las reglas son deterministas; el LLM interpreta el propósito.</p></details>
+<details><summary>¿Se puede retirar un objeto sin uso?</summary><p>Solo si además no tiene dependientes ni enganches. Un job anual o una salida legal pueden tener uso cero en la ventana medida.</p></details>
+<details><summary>¿Por qué no mandar todo a n8n?</summary><p>La lógica que corre dentro de una transacción en el momento del posteo necesita consistencia y baja latencia; va como extensión in-app. n8n sirve para lo asíncrono, programado o integrado.</p></details>
+<details><summary>¿Cuánto tarda la migración?</summary><p>La demo propone un orden por olas, no un calendario. Plazos y esfuerzo dependen del alcance y del equipo del cliente.</p></details>
+</div>
+
+<footer class="mono"><span>Prototipo de Migración Greenfield · AI-Q Consultores</span><span>DOC // AIQ-GF-001 · datos ficticios</span></footer>
+</div>
+<script>
+const DATA=[{"objeto": "ZSD_PRINT_INVOICE", "tipo": "PROG", "uso_llamadas": 5400, "uso_clase": "alto", "cableado": true, "peso_dependientes": 5, "criticidad_score": 6, "criticidad_nivel": "alto", "cuadrante": "A1", "disposicion_final": "estandar_s4", "disposicion_llm": "estandar_s4", "confianza": 0.9, "revision_humana": true, "enganche_oculto": "NAST/TNAPR salida legal ZRE1 (facturación)", "proposito": "Impresión de facturas con salida legal; escribe log de impresión.", "alertas": "Objeto fiscal AR: validar cobertura de la localización estándar; en cadena legal ZRE1"}, {"objeto": "ZSD_FORM_FACTURA", "tipo": "SMARTFORM", "uso_llamadas": 5400, "uso_clase": "alto", "cableado": true, "peso_dependientes": 8, "criticidad_score": 7, "criticidad_nivel": "alto", "cuadrante": "A1", "disposicion_final": "estandar_s4", "disposicion_llm": "estandar_s4", "confianza": 0.9, "revision_humana": true, "enganche_oculto": "NAST/TNAPR salida legal ZRE1 (facturación)", "proposito": "Smart Form de factura electrónica con datos fiscales.", "alertas": "Objeto fiscal AR: validar cobertura de la localización estándar; en cadena legal ZRE1"}, {"objeto": "ZFI_FORMAT_CUIT", "tipo": "FUNC", "uso_llamadas": 5400, "uso_clase": "alto", "cableado": true, "peso_dependientes": 4, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "A1", "disposicion_final": "extension_in_app", "disposicion_llm": "extension_in_app", "confianza": 0.9, "revision_humana": true, "enganche_oculto": "Llamada oculta (PERFORM) desde el Smart Form de factura", "proposito": "Formatea el CUIT con guiones para documentos legales.", "alertas": "Objeto fiscal AR; en cadena legal ZRE1"}, {"objeto": "ZFI_GET_CAE", "tipo": "FUNC", "uso_llamadas": 5400, "uso_clase": "alto", "cableado": true, "peso_dependientes": 2, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "A1", "disposicion_final": "estandar_s4", "disposicion_llm": "estandar_s4", "confianza": 0.9, "revision_humana": false, "enganche_oculto": "", "proposito": "Solicita el CAE al servicio web fiscal.", "alertas": "Objeto fiscal AR: validar cobertura estándar; en cadena legal ZRE1"}, {"objeto": "ZSD_FORM_REMITO", "tipo": "SAPSCRIPT", "uso_llamadas": 9, "uso_clase": "bajo", "cableado": true, "peso_dependientes": 5, "criticidad_score": 6, "criticidad_nivel": "alto", "cuadrante": "B1", "disposicion_final": "estandar_s4", "disposicion_llm": "estandar_s4", "confianza": 0.9, "revision_humana": true, "enganche_oculto": "NAST/TNAPR salida legal ZRM1 (remito de traslado)", "proposito": "Formulario SAPscript de remito de traslado.", "alertas": "Objeto fiscal AR; en cadena legal ZRM1; poco uso medido pero cableado"}, {"objeto": "ZSD_REMITO_UTILS", "tipo": "PROG", "uso_llamadas": 9, "uso_clase": "bajo", "cableado": true, "peso_dependientes": 4, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "B1", "disposicion_final": "extension_in_app", "disposicion_llm": "extension_in_app", "confianza": 0.8, "revision_humana": true, "enganche_oculto": "Llamada oculta (PERFORM) desde el SAPscript de remito", "proposito": "Subrutinas del remito: datos de cliente y código QR.", "alertas": "Objeto fiscal AR; en cadena legal ZRM1"}, {"objeto": "ZFI_LIBRO_IVA_DIGITAL", "tipo": "PROG", "uso_llamadas": 8, "uso_clase": "bajo", "cableado": true, "peso_dependientes": 6, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "B1", "disposicion_final": "VALIDAR (no retirar: tiene dependientes activos)", "disposicion_llm": "retirar", "confianza": 0.7, "revision_humana": true, "enganche_oculto": "Job mensual Z_LIBRO_IVA_MENSUAL", "proposito": "Genera el archivo digital del Libro IVA para el fisco.", "alertas": "LLM propuso retirar pero hay un job activo; objeto fiscal AR"}, {"objeto": "ZFI_YEAREND_CLOSE_EXT", "tipo": "PROG", "uso_llamadas": 0, "uso_clase": "cero", "cableado": true, "peso_dependientes": 4, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "C1", "disposicion_final": "VALIDAR (no retirar: tiene dependientes activos)", "disposicion_llm": "retirar", "confianza": 0.7, "revision_humana": true, "enganche_oculto": "Job anual Z_CIERRE_ANUAL_EXT (última ejecución 2025-12-30)", "proposito": "Asientos de cierre anual extendido (posteo contable).", "alertas": "Sin uso medido pero con job anual activo; la ventana de 8 meses no cubre el ciclo anual"}, {"objeto": "ZMM_OLD_STOCK_REPORT", "tipo": "PROG", "uso_llamadas": 0, "uso_clase": "cero", "cableado": false, "peso_dependientes": 0, "criticidad_score": 0, "criticidad_nivel": "bajo", "cuadrante": "C2", "disposicion_final": "retirar", "disposicion_llm": "retirar", "confianza": 0.85, "revision_humana": true, "enganche_oculto": "", "proposito": "Reporte ALV de stock antiguo.", "alertas": "Sin uso ni dependientes; transacción huérfana"}, {"objeto": "ZSD_PRICING_ROUTINE", "tipo": "VOFM_ROUTINE", "uso_llamadas": 31000, "uso_clase": "alto", "cableado": true, "peso_dependientes": 4, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "A1", "disposicion_final": "extension_in_app", "disposicion_llm": "extension_in_app", "confianza": 0.85, "revision_humana": true, "enganche_oculto": "Rutina VOFM 901 en esquema de cálculo ZPR001", "proposito": "Descuento especial por cliente en la fórmula de precios.", "alertas": "Lógica síncrona en la transacción de precios: no apta para n8n"}, {"objeto": "ZCL_BADI_MIGO_VALIDATION", "tipo": "BADI_IMPL", "uso_llamadas": 12000, "uso_clase": "alto", "cableado": true, "peso_dependientes": 4, "criticidad_score": 6, "criticidad_nivel": "alto", "cuadrante": "A1", "disposicion_final": "extension_in_app", "disposicion_llm": "extension_in_app", "confianza": 0.9, "revision_humana": false, "enganche_oculto": "BAdI activo MB_DOCUMENT_BADI", "proposito": "Bloquea movimientos de mercadería según reglas propias.", "alertas": "Validación síncrona en MIGO: extensión in-app"}, {"objeto": "ZRFC_GET_CUSTOMER_CREDIT", "tipo": "FUNC", "uso_llamadas": 2200, "uso_clase": "alto", "cableado": true, "peso_dependientes": 4, "criticidad_score": 4, "criticidad_nivel": "medio", "cuadrante": "A1", "disposicion_final": "side_by_side_n8n", "disposicion_llm": "side_by_side_n8n", "confianza": 0.8, "revision_humana": true, "enganche_oculto": "Llamador externo CRM_EXT (10.20.1.55)", "proposito": "Consulta de límite de crédito para el CRM externo.", "alertas": "Llamado desde un sistema externo; el destino cambió entre corridas del LLM (antes integration_suite): decidir con arquitectura"}, {"objeto": "ZJOB_REPLENISHMENT_EMAIL", "tipo": "PROG", "uso_llamadas": 240, "uso_clase": "bajo", "cableado": true, "peso_dependientes": 3, "criticidad_score": 3, "criticidad_nivel": "medio", "cuadrante": "B1", "disposicion_final": "side_by_side_n8n", "disposicion_llm": "side_by_side_n8n", "confianza": 0.9, "revision_humana": true, "enganche_oculto": "Job diario Z_REPLEN_NOCTURNO", "proposito": "Aviso nocturno de reposición de stock por mail.", "alertas": "Proceso asíncrono programado: candidato a n8n"}, {"objeto": "ZCL_WF_APPROVAL_PO", "tipo": "CLAS", "uso_llamadas": 780, "uso_clase": "bajo", "cableado": true, "peso_dependientes": 3, "criticidad_score": 2, "criticidad_nivel": "bajo", "cuadrante": "B1", "disposicion_final": "sbpa_workflow", "disposicion_llm": "sbpa_workflow", "confianza": 0.8, "revision_humana": true, "enganche_oculto": "Tarea de workflow TS90001234 (aprobar pedido de compra)", "proposito": "Determina el aprobador de un pedido de compra por monto.", "alertas": "Usa la tabla Z ZMM_APPR_LEVELS: evaluar su migración"}, {"objeto": "ZBW_EXTRACT_SALES", "tipo": "FUNC", "uso_llamadas": 240, "uso_clase": "bajo", "cableado": true, "peso_dependientes": 7, "criticidad_score": 6, "criticidad_nivel": "alto", "cuadrante": "B1", "disposicion_final": "VALIDAR (no retirar: tiene dependientes activos)", "disposicion_llm": "retirar", "confianza": 0.85, "revision_humana": true, "enganche_oculto": "DataSource BW ZSD_SALES_DS; llamador externo BW (BWP100)", "proposito": "Extractor genérico de ventas para BW.", "alertas": "LLM propuso retirar pero BW depende de él; llamado externo"}, {"objeto": "ZIDOC_INBOUND_ORDERS", "tipo": "FUNC", "uso_llamadas": 4100, "uso_clase": "alto", "cableado": true, "peso_dependientes": 4, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "A1", "disposicion_final": "integration_suite", "disposicion_llm": "integration_suite", "confianza": 0.9, "revision_humana": false, "enganche_oculto": "Perfil de socio CRM_EXT / IDoc ORDERS", "proposito": "Alta de pedidos de venta desde IDoc ORDERS.", "alertas": "Interfaz entrante que crea pedidos de venta"}, {"objeto": "ZSD_ORDER_STATUS_REPORT", "tipo": "PROG", "uso_llamadas": 9800, "uso_clase": "alto", "cableado": true, "peso_dependientes": 2, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "A1", "disposicion_final": "rediseno_cds_fiori", "disposicion_llm": "rediseno_cds_fiori", "confianza": 0.9, "revision_humana": true, "enganche_oculto": "", "proposito": "Reporte ALV de estado de pedidos; 240 usuarios de diálogo.", "alertas": "Uso por 240 usuarios: planificar gestión del cambio"}, {"objeto": "ZSD_CUST_EXT", "tipo": "TABL", "uso_llamadas": 0, "uso_clase": "datos", "cableado": true, "peso_dependientes": 4, "criticidad_score": 5, "criticidad_nivel": "medio", "cuadrante": "T", "disposicion_final": "migrar_datos", "disposicion_llm": "extension_in_app", "confianza": 0.8, "revision_humana": true, "enganche_oculto": "", "proposito": "Extensión de datos de cliente (48.210 filas).", "alertas": "Objeto fiscal AR; en cadena legal ZRE1; migrar datos históricos; leída por 4 objetos Z"}];
+const STAGES=[
+{t:"Extracción",a:"Extractor Z",w:"Un programa ABAP de solo lectura en el sistema del cliente vuelca el código, el uso medido y la configuración a archivos.",u:"SCMON, SUSG, tablas de configuración",o:"Archivos del volcado"},
+{t:"Ingesta",a:"n8n",w:"n8n lee el volcado y arma un único paquete con objetos, uso y configuración. En la demo lo simula un nodo con datos ficticios.",u:"Archivos del extractor",o:"18 objetos con uso y configuración"},
+{t:"Análisis estático",a:"Código, sin LLM",w:"Se recorre el código de cada objeto: qué llama, qué lee, qué escribe y qué hace de sensible (posteos, HTTP saliente, creación de pedidos).",u:"Código fuente ABAP",o:"Grafo de llamadas y banderas técnicas"},
+{t:"Enganches ocultos",a:"Código, sin LLM",w:"Se cruza la configuración: salidas legales, jobs, rutinas de precios, BAdIs, BW, IDoc, workflow y llamadores externos. Aparecen dependientes que ningún where-used de código muestra.",u:"NAST/TNAPR, jobs, VOFM, BAdI, BW, IDoc",o:"Dependientes por objeto y cadena legal"},
+{t:"Propósito y destino",a:"LLM",w:"El LLM recibe los hechos duros y el código, y propone qué necesidad cubre el objeto, cómo se cubre en S/4HANA y a qué destino va, con su nivel de confianza.",u:"Hechos + fuente",o:"Propuesta con esquema fijo"},
+{t:"Reglas de guarda",a:"Reglas",w:"Las reglas corrigen al LLM si contradice los hechos: no se retira lo que tiene dependientes, lo síncrono no va a n8n y las tablas con datos van a migración.",u:"Propuesta + hechos",o:"Destino final y alertas"},
+{t:"Scoring",a:"Código",w:"Se calcula el cuadrante (uso frente a dependencias) y la criticidad de 0 a 10 con dependientes, usuarios, llamadores externos y salida legal.",u:"Hechos del grafo",o:"Cuadrante y criticidad"},
+{t:"Catálogo y revisión",a:"Persona revisora",w:"El resultado se guarda y se marca lo que exige validación humana. De ahí salen el dashboard del cliente y el roadmap por olas.",u:"Catálogo",o:"Dashboard, roadmap y lista de revisión"}];
+const D=11000; // ms por etapa a 1x (~88 s total)
+let cur=0,playing=true,spd=1,elapsed=0,last=performance.now();
+const $=id=>document.getElementById(id);
+const flow=$('flow');
+flow.innerHTML=STAGES.map((s,i)=>`<div class="node mono" data-i="${i}"><span class="n">${String(i+1).padStart(2,'0')}</span>${s.t}</div>`).join('');
+function show(i){cur=Math.max(0,Math.min(STAGES.length-1,i));elapsed=0;const s=STAGES[cur];
+document.querySelectorAll('.node').forEach((n,k)=>{n.classList.toggle('on',k===cur);n.classList.toggle('done',k<cur)});
+$('vstage').textContent='Etapa '+String(cur+1).padStart(2,'0')+' / 08';$('vfig').textContent='FIG. '+String(cur+1).padStart(2,'0')+' · '+s.t;
+$('stagebox').innerHTML=`<div><h3>${s.t}</h3><p style="margin:0">${s.w}</p></div><div><div class="box"><b>Actor</b>${s.a}</div><div class="box"><b>Usa</b>${s.u}</div><div class="box"><b>Entrega</b>${s.o}</div></div>`;}
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function tick(now){const dt=now-last;last=now;if(playing){elapsed+=dt*spd;if(elapsed>=D){if(cur<STAGES.length-1)show(cur+1);else{playing=false;$('bplay').textContent='▶ Reanudar';elapsed=D}}}
+$('bbar').style.width=Math.min(100,elapsed/D*100)+'%';$('vtime').textContent=fmt(cur*D+elapsed);requestAnimationFrame(tick)}
+$('bplay').onclick=()=>{playing=!playing;if(playing&&cur===STAGES.length-1&&elapsed>=D){show(0)}$('bplay').textContent=playing?'❚❚ Pausa':'▶ Reanudar'};
+$('brest').onclick=()=>{show(0);playing=true;$('bplay').textContent='❚❚ Pausa'};
+$('bprev').onclick=()=>show(cur-1);$('bnext').onclick=()=>show(cur+1);
+$('bspd').onchange=e=>spd=parseFloat(e.target.value);
+document.addEventListener('keydown',e=>{const t=e.target.tagName;if(t==='SELECT'||t==='INPUT')return;if(e.code==='Space'){e.preventDefault();$('bplay').click()}else if(e.key==='ArrowRight')show(cur+1);else if(e.key==='ArrowLeft')show(cur-1)});
+flow.onclick=e=>{const n=e.target.closest('.node');if(n)show(+n.dataset.i)};
+show(0);requestAnimationFrame(t=>{last=t;tick(t)});
+// tabs
+const TABS=[['p-arq','Arquitectura'],['p-flujo','Flujo de análisis'],['p-score','Cuadrantes y criticidad'],['p-expl','Explorador de objetos'],['p-lim','Límites y preguntas']];
+const tabs=$('tabs');tabs.innerHTML=TABS.map((t,i)=>`<button role="tab" data-p="${t[0]}" aria-selected="${i===0}">${t[1]}</button>`).join('');
+tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p))};
+// cuadrantes
+const cnt=q=>DATA.filter(r=>r.cuadrante===q).length;
+const uso=r=>r.uso_clase;
+const A=DATA.filter(r=>r.cuadrante==='A1').length,B=cnt('B1'),C1=cnt('C1'),C2=cnt('C2'),T=cnt('T');
+$('quad').innerHTML=`<div class="h"></div><div class="h">Cableado (alguien depende)</div><div class="h">Sin dependientes</div>
+<div class="h">Uso alto</div><div><span class="mono">A1</span><b>${A}</b>Alto uso y cableado: no se toca sin plan</div><div><span class="mono">A2</span><b>${cnt('A2')}</b>Alto uso directo</div>
+<div class="h">Poco uso</div><div><span class="mono">B1</span><b>${B}</b>Dormido pero cableado: el caso engañoso</div><div><span class="mono">B2</span><b>${cnt('B2')}</b>Bajo uso sin dependientes</div>
+<div class="h">Sin uso</div><div><span class="mono">C1</span><b>${C1}</b>Sin uso medido pero cableado (por ejemplo, un job anual)</div><div><span class="mono">C2</span><b>${C2}</b>Sin uso ni dependientes: candidato a retirar</div>
+<div class="h">Datos</div><div><span class="mono">T</span><b>${T}</b>Tabla con datos históricos</div><div></div>`;
+// explorador
+const osel=$('osel');osel.innerHTML=DATA.map((r,i)=>`<option value="${i}">${r.objeto}</option>`).join('');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function obj(){const r=DATA[+osel.value];const same=r.disposicion_llm===r.disposicion_final;
+$('oview').innerHTML=`<div class="card"><h4>1 · Hechos duros</h4><p style="margin:0;font-size:14px"><span class="mono">${esc(r.tipo)}</span> · ${r.uso_llamadas.toLocaleString('es-AR')} llamadas en 8 meses (uso ${esc(r.uso_clase)}). ${esc(r.proposito)}</p></div>
+<div class="card"><h4>2 · Enganches y dependientes</h4><p style="margin:0;font-size:14px">${r.enganche_oculto?esc(r.enganche_oculto):'Sin enganche oculto detectado.'} ${r.cableado?'Cableado: otro objeto o configuración depende de él.':'Sin dependientes.'}</p></div>
+<div class="card"><h4>3 · Propuesta del LLM</h4><p style="margin:0;font-size:14px"><span class="chip a mono">${esc(r.disposicion_llm)}</span> confianza ${r.confianza}</p></div>
+<div class="card"><h4>4 · Reglas de guarda</h4><p style="margin:0;font-size:14px">${esc(r.alertas)}</p></div>
+<div class="card"><h4>5 · Resultado</h4><p style="margin:0;font-size:14px"><span class="chip mono">${esc(r.disposicion_final)}</span>${same?'':' <span class="warnc">(corregido por reglas)</span>'}<br>Cuadrante ${esc(r.cuadrante)} · criticidad ${r.criticidad_score}/10 (${esc(r.criticidad_nivel)}) · ${r.revision_humana?'<b>requiere revisión humana</b>':'revisión por muestreo'}</p></div>`}
+osel.onchange=obj;obj();
+</script>
+</body></html>
