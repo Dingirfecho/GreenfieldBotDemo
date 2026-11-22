@@ -78,7 +78,7 @@ footer{margin:44px 0 30px;padding-top:14px;border-top:1px solid var(--ink);font-
 <p class="lead">En una migración greenfield no se convierte código: se decide qué necesidad cubre cada objeto personalizado y cuál es la mejor forma de cubrirla en el sistema nuevo. Esta demo muestra cómo un flujo en n8n inventaría los objetos Z, descubre quién depende de ellos (incluso en lugares que un where-used no ve), propone un destino y deja a una persona la decisión final. Primero un recorrido guiado de unos 90 segundos; después, pestañas por tema.</p>
 <div class="callout">Simulación ilustrativa. Los 18 objetos, los usos y las dependencias son ficticios (ECC 6.0 EHP7 simulado, ventana de uso de 8 meses); no hay conexión a ningún sistema real. Los destinos propuestos son sugerencias a validar, no decisiones.</div>
 
-<div class="callout" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-top:0"><span style="border:0">Así se ve el resultado final que recibe el cliente: dashboard con inventario, configuración, dependencias ocultas y roadmap.</span><a class="tag mono" style="text-decoration:none;color:var(--ink);background:var(--card)" href="dashboard.html">Ver el dashboard del cliente →</a></div>
+<div class="callout" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;margin-top:0"><span style="border:0">Así se ve el resultado final que recibe el cliente: dashboard con inventario, configuración, dependencias ocultas y roadmap.</span><span style="display:flex;gap:8px;flex-wrap:wrap"><a class="tag mono" style="text-decoration:none;color:var(--ink);background:var(--card)" href="dashboard.html">Ver el dashboard del cliente →</a><a class="tag mono" id="goapp" style="text-decoration:none;color:var(--ink);background:var(--card)" href="#tabs">Roadmap de aplicación ↓</a></span></div>
 <section class="viewer" id="viewer" aria-label="Recorrido guiado">
 <div class="vhead mono"><span id="vstage">Etapa 01 / 08</span><span id="vfig">FIG. 01 · Extracción</span><span id="vtime">00:00</span></div>
 <div class="lanes mono"><span>Cliente (SAP ECC)</span><span>Orquestación (n8n)</span><span>Salida</span></div>
@@ -154,6 +154,17 @@ footer{margin:44px 0 30px;padding-top:14px;border-top:1px solid var(--ink);font-
 <details><summary>¿Cuánto tarda la migración?</summary><p>La demo propone un orden por olas, no un calendario. Plazos y esfuerzo dependen del alcance y del equipo del cliente.</p></details>
 </div>
 
+<div class="panel" id="p-app" role="tabpanel">
+<p>Cómo se aplica esto en un cliente real: de un piloto acotado a un inventario completo y un plan de migración aprobado. El orden es por dependencias; los plazos los define el alcance y el equipo de cada cliente.</p>
+<div class="grid" id="appgrid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"></div>
+<h3 style="margin-top:24px">Qué aporta cada parte</h3>
+<div class="scroll"><table><thead><tr><th>Parte</th><th>Aporta</th><th>Recibe</th></tr></thead><tbody>
+<tr><td>Cliente (Basis y seguridad)</td><td>Acceso de lectura, medición de uso activa, revisión del extractor antes de instalarlo</td><td>Garantía de solo lectura y trazabilidad de lo que se extrae</td></tr>
+<tr><td>Dueños de proceso</td><td>Validación de lo marcado como VALIDAR y de las salidas legales</td><td>Una lista corta y priorizada, no 1.000 objetos</td></tr>
+<tr><td>AI-Q Consultores</td><td>Flujo de análisis, ajuste de reglas y pesos al cliente, dashboard y roadmap</td><td>Un catálogo auditable y repetible</td></tr></tbody></table></div>
+<div class="callout">Los pesos del scoring y las reglas de guarda se calibran con cada cliente en el piloto: lo que aquí se muestra es una primera versión sobre datos ficticios.</div>
+</div>
+
 <footer class="mono"><span>Prototipo de Migración Greenfield · AI-Q Consultores</span><span><a href="dashboard.html" style="color:inherit">Dashboard del cliente</a> · DOC // AIQ-GF-001 · datos ficticios</span></footer>
 </div>
 <script>
@@ -187,7 +198,7 @@ document.addEventListener('keydown',e=>{const t=e.target.tagName;if(t==='SELECT'
 flow.onclick=e=>{const n=e.target.closest('.node');if(n)show(+n.dataset.i)};
 show(0);requestAnimationFrame(t=>{last=t;tick(t)});
 // tabs
-const TABS=[['p-arq','Arquitectura'],['p-flujo','Flujo de análisis'],['p-score','Cuadrantes y criticidad'],['p-expl','Explorador de objetos'],['p-lim','Límites y preguntas']];
+const TABS=[['p-arq','Arquitectura'],['p-flujo','Flujo de análisis'],['p-score','Cuadrantes y criticidad'],['p-expl','Explorador de objetos'],['p-app','Roadmap de aplicación'],['p-lim','Límites y preguntas']];
 const tabs=$('tabs');tabs.innerHTML=TABS.map((t,i)=>`<button role="tab" data-p="${t[0]}" aria-selected="${i===0}">${t[1]}</button>`).join('');
 tabs.onclick=e=>{const b=e.target.closest('button');if(!b)return;tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id===b.dataset.p))};
 // cuadrantes
@@ -209,5 +220,15 @@ $('oview').innerHTML=`<div class="card"><h4>1 · Hechos duros</h4><p style="marg
 <div class="card"><h4>4 · Reglas de guarda</h4><p style="margin:0;font-size:14px">${esc(r.alertas)}</p></div>
 <div class="card"><h4>5 · Resultado</h4><p style="margin:0;font-size:14px"><span class="chip mono">${esc(r.disposicion_final)}</span>${same?'':' <span class="warnc">(corregido por reglas)</span>'}<br>Cuadrante ${esc(r.cuadrante)} · criticidad ${r.criticidad_score}/10 (${esc(r.criticidad_nivel)}) · ${r.revision_humana?'<b>requiere revisión humana</b>':'revisión por muestreo'}</p></div>`}
 osel.onchange=obj;obj();
+const APP=[
+{n:'0',t:'Alcance y acceso',w:'Se acuerdan sistemas, módulos del piloto, confidencialidad y quién valida cada área. Basis y seguridad revisan el extractor Z de solo lectura.',e:'Alcance firmado y extractor aprobado'},
+{n:'1',t:'Preparación del cliente',w:'Se activa la medición de uso (SCMON y SUSG) con al menos 12 meses de historia, o se define un plan alternativo si el sistema es antiguo. El extractor se instala primero en un entorno de desarrollo.',e:'Uso medido y primer volcado de prueba'},
+{n:'2',t:'Piloto sobre un área',w:'Se corre el análisis sobre un área acotada, por ejemplo facturación. Los dueños de proceso revisan el catálogo y se ajustan pesos y reglas.',e:'Catálogo del piloto validado y reglas calibradas'},
+{n:'3',t:'Inventario completo',w:'Se extiende a todos los objetos Z. Las personas revisoras resuelven lo marcado como VALIDAR, las salidas legales y las interfaces externas.',e:'Catálogo completo con decisiones de revisión'},
+{n:'4',t:'Dashboard y roadmap de migración',w:'El catálogo se convierte en dashboard para el cliente y en un plan por olas con criterios de salida. El cliente aprueba el orden.',e:'Dashboard y roadmap aprobados'},
+{n:'5',t:'Ejecución y seguimiento',w:'Se vuelve a correr el análisis cuando cambia el alcance o aparecen objetos nuevos, y el tablero refleja el avance de cada ola.',e:'Catálogo vivo hasta el corte'}];
+$('appgrid').innerHTML=APP.map(a=>`<div class="card"><h4><span class="mono" style="color:var(--acc)">Fase ${a.n}</span> · ${a.t}</h4><p style="margin:0 0 8px;font-size:14px">${a.w}</p><div style="font-size:12px;color:var(--mute)" class="mono">ENTREGA: ${a.e}</div></div>`).join('');
+$('goapp').onclick=e=>{e.preventDefault();const b=tabs.querySelector('[data-p="p-app"]');b.click();tabs.scrollIntoView({behavior:'smooth'})};
+
 </script>
 </body></html>
